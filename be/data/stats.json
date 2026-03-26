@@ -5,5 +5,68 @@
     "losses": 23,
     "shotsFired": 2000986,
     "selfShots": 22314
+  },
+  "sss": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 82,
+    "selfShots": 68
+  },
+  "ss": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 16,
+    "selfShots": 12
+  },
+  "fgfg": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 42,
+    "selfShots": 38
+  },
+  "asds": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 16,
+    "selfShots": 16
+  },
+  "fg": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 24,
+    "selfShots": 24
+  },
+  "bjbj": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 18,
+    "selfShots": 16
+  },
+  "gfg": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 30,
+    "selfShots": 30
+  },
+  "d": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 14,
+    "selfShots": 8
+  },
+  "g": {
+    "gamesPlayed": 0,
+    "wins": 0,
+    "losses": 0,
+    "shotsFired": 12,
+    "selfShots": 8
   }
 }

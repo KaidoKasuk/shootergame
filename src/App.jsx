@@ -1,12 +1,17 @@
-import { useState, useReducer, useRef } from 'react';
+import { useState, useReducer, useRef } from "react";
 import {
-  MAX_HP, ROUNDS_TO_WIN, CHAMBER_SIZE,
-  CASINO_OUTCOMES, ENEMY_NAMES, PROFILE_PICS, rand,
-} from './constants';
-import { useStats } from './context/StatsContext';
-import LoginScreen from './components/LoginScreen';
-import GameScreen from './components/GameScreen';
-import GameOverScreen from './components/GameOverScreen';
+  MAX_HP,
+  ROUNDS_TO_WIN,
+  CHAMBER_SIZE,
+  CASINO_OUTCOMES,
+  ENEMY_NAMES,
+  PROFILE_PICS,
+  rand,
+} from "./constants";
+import { useStats } from "./context/StatsContext";
+import LoginScreen from "./components/LoginScreen";
+import GameScreen from "./components/DisplayParts/GameScreen";
+import GameOverScreen from "./components/GameOverScreen";
 
 function generateBullets() {
   const b = Array(CHAMBER_SIZE).fill(false);
@@ -22,7 +27,7 @@ function generateBullets() {
 
 // ── Game state reducer ──────────────────────────────────────────────────────
 const initialGameState = {
-  enemyName: '',
+  enemyName: "",
   enemyPic: 0,
   playerHP: MAX_HP,
   enemyHP: MAX_HP,
@@ -42,35 +47,64 @@ const initialGameState = {
 
 function gameReducer(state, action) {
   switch (action.type) {
-    case 'INIT':
-      return { ...initialGameState, enemyName: action.enemyName, enemyPic: action.enemyPic, bullets: action.bullets };
-    case 'ADD_LOG':
-      return { ...state, log: [...state.log, { text: action.text, type: action.logType || 'default', id: Date.now() + Math.random() }] };
-    case 'SET_HP': {
-      const key = action.target === 'player' ? 'playerHP' : 'enemyHP';
+    case "INIT":
+      return {
+        ...initialGameState,
+        enemyName: action.enemyName,
+        enemyPic: action.enemyPic,
+        bullets: action.bullets,
+      };
+    case "ADD_LOG":
+      return {
+        ...state,
+        log: [
+          ...state.log,
+          {
+            text: action.text,
+            type: action.logType || "default",
+            id: Date.now() + Math.random(),
+          },
+        ],
+      };
+    case "SET_HP": {
+      const key = action.target === "player" ? "playerHP" : "enemyHP";
       return { ...state, [key]: action.value };
     }
-    case 'ADVANCE_CHAMBER':
-      return { ...state, currentChamber: (state.currentChamber + 1) % CHAMBER_SIZE };
-    case 'SET_CHAMBER':
+    case "ADVANCE_CHAMBER":
+      return {
+        ...state,
+        currentChamber: (state.currentChamber + 1) % CHAMBER_SIZE,
+      };
+    case "SET_CHAMBER":
       return { ...state, currentChamber: action.index };
-    case 'SET_SPINNING':
+    case "SET_SPINNING":
       return { ...state, spinning: action.value };
-    case 'SET_PLAYER_TURN':
+    case "SET_PLAYER_TURN":
       return { ...state, isPlayerTurn: action.value };
-    case 'INCREMENT_TURN':
+    case "INCREMENT_TURN":
       return { ...state, turn: state.turn + 1 };
-    case 'SET_ACTION_LOCKED':
+    case "SET_ACTION_LOCKED":
       return { ...state, actionLocked: action.value };
-    case 'USE_CASINO':
+    case "USE_CASINO":
       return { ...state, casinoUsed: true };
-    case 'ADD_WIN':
+    case "ADD_WIN":
       return { ...state, playerWins: state.playerWins + 1 };
-    case 'ADD_LOSS':
+    case "ADD_LOSS":
       return { ...state, enemyWins: state.enemyWins + 1 };
-    case 'NEXT_ROUND':
-      return { ...state, round: state.round + 1, turn: 1, playerHP: MAX_HP, enemyHP: MAX_HP, bullets: action.bullets, currentChamber: 0, casinoUsed: false, isPlayerTurn: true, actionLocked: false };
-    case 'GAME_OVER':
+    case "NEXT_ROUND":
+      return {
+        ...state,
+        round: state.round + 1,
+        turn: 1,
+        playerHP: MAX_HP,
+        enemyHP: MAX_HP,
+        bullets: action.bullets,
+        currentChamber: 0,
+        casinoUsed: false,
+        isPlayerTurn: true,
+        actionLocked: false,
+      };
+    case "GAME_OVER":
       return { ...state, gameWon: action.won };
     default:
       return state;
@@ -79,8 +113,8 @@ function gameReducer(state, action) {
 
 // ────────────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [screen, setScreen] = useState('login');
-  const [playerName, setPlayerName] = useState('');
+  const [screen, setScreen] = useState("login");
+  const [playerName, setPlayerName] = useState("");
   const [playerPic, setPlayerPic] = useState(0);
   const [gameState, dispatch] = useReducer(gameReducer, initialGameState);
 
@@ -98,9 +132,22 @@ export default function App() {
   const { recordShot, recordGameEnd, setCurrentPlayer } = useStats();
 
   const {
-    enemyName, enemyPic, playerHP, enemyHP, round, turn,
-    playerWins, enemyWins, isPlayerTurn, bullets, currentChamber,
-    spinning, casinoUsed, gameWon, actionLocked, log,
+    enemyName,
+    enemyPic,
+    playerHP,
+    enemyHP,
+    round,
+    turn,
+    playerWins,
+    enemyWins,
+    isPlayerTurn,
+    bullets,
+    currentChamber,
+    spinning,
+    casinoUsed,
+    gameWon,
+    actionLocked,
+    log,
   } = gameState;
 
   // Refs for reading state safely inside async setTimeout callbacks
@@ -133,7 +180,7 @@ export default function App() {
     const ePic = rand(0, PROFILE_PICS.length - 1);
 
     try {
-      const res = await fetch('https://randomuser.me/api/');
+      const res = await fetch("https://randomuser.me/api/");
       const data = await res.json();
       const user = data.results[0];
       eName = `${user.name.first} ${user.name.last[0]}.`;
@@ -143,14 +190,31 @@ export default function App() {
 
     const newBullets = generateBullets();
     setCurrentPlayer(playerName.trim());
-    dispatch({ type: 'INIT', enemyName: eName, enemyPic: ePic, bullets: newBullets });
-    setScreen('game');
+    dispatch({
+      type: "INIT",
+      enemyName: eName,
+      enemyPic: ePic,
+      bullets: newBullets,
+    });
+    setScreen("game");
 
     setTimeout(() => {
       const liveCount = newBullets.filter(Boolean).length;
-      dispatch({ type: 'ADD_LOG', text: '[SYSTEM] Game started. Round 1.', logType: 'system' });
-      dispatch({ type: 'ADD_LOG', text: `[SYSTEM] ${liveCount} live round${liveCount > 1 ? 's' : ''} loaded.`, logType: 'system' });
-      dispatch({ type: 'ADD_LOG', text: `[SYSTEM] Your turn, ${playerName.trim()}.`, logType: 'info' });
+      dispatch({
+        type: "ADD_LOG",
+        text: "[SYSTEM] Game started. Round 1.",
+        logType: "system",
+      });
+      dispatch({
+        type: "ADD_LOG",
+        text: `[SYSTEM] ${liveCount} live round${liveCount > 1 ? "s" : ""} loaded.`,
+        logType: "system",
+      });
+      dispatch({
+        type: "ADD_LOG",
+        text: `[SYSTEM] Your turn, ${playerName.trim()}.`,
+        logType: "info",
+      });
     }, 100);
   }
 
@@ -158,98 +222,175 @@ export default function App() {
   function fireShot(atSelf) {
     if (!isPlayerTurn || spinning || actionLocked) return;
     const isLive = bulletsRef.current[currentChamberRef.current];
-    dispatch({ type: 'ADVANCE_CHAMBER' });
+    dispatch({ type: "ADVANCE_CHAMBER" });
     recordShot(atSelf);
 
     if (atSelf) {
       if (isLive) {
-        dispatch({ type: 'ADD_LOG', text: '> You shoot yourself... BANG! -1 HP', logType: 'damage' });
+        dispatch({
+          type: "ADD_LOG",
+          text: "> You shoot yourself... BANG! -1 HP",
+          logType: "damage",
+        });
         const newHP = Math.max(0, playerHPRef.current - 1);
-        dispatch({ type: 'SET_HP', target: 'player', value: newHP });
-        if (newHP <= 0) { setTimeout(() => endRoundRef.current(false), 500); return; }
-        dispatch({ type: 'INCREMENT_TURN' });
-        dispatch({ type: 'SET_PLAYER_TURN', value: false });
-        dispatch({ type: 'SET_ACTION_LOCKED', value: true });
-        setTimeout(() => { dispatch({ type: 'SET_ACTION_LOCKED', value: false }); enemyTurnRef.current(); }, 1500);
+        dispatch({ type: "SET_HP", target: "player", value: newHP });
+        if (newHP <= 0) {
+          setTimeout(() => endRoundRef.current(false), 500);
+          return;
+        }
+        dispatch({ type: "INCREMENT_TURN" });
+        dispatch({ type: "SET_PLAYER_TURN", value: false });
+        dispatch({ type: "SET_ACTION_LOCKED", value: true });
+        setTimeout(() => {
+          dispatch({ type: "SET_ACTION_LOCKED", value: false });
+          enemyTurnRef.current();
+        }, 1500);
       } else {
-        dispatch({ type: 'ADD_LOG', text: '> You shoot yourself... *click* Empty. Go again.', logType: 'info' });
+        dispatch({
+          type: "ADD_LOG",
+          text: "> You shoot yourself... *click* Empty. Go again.",
+          logType: "info",
+        });
       }
     } else {
       if (isLive) {
-        dispatch({ type: 'ADD_LOG', text: `> You shoot ${enemyNameRef.current}... BANG! -1 HP`, logType: 'damage' });
+        dispatch({
+          type: "ADD_LOG",
+          text: `> You shoot ${enemyNameRef.current}... BANG! -1 HP`,
+          logType: "damage",
+        });
         const newHP = Math.max(0, enemyHPRef.current - 1);
-        dispatch({ type: 'SET_HP', target: 'enemy', value: newHP });
-        if (newHP <= 0) { setTimeout(() => endRoundRef.current(true), 500); return; }
+        dispatch({ type: "SET_HP", target: "enemy", value: newHP });
+        if (newHP <= 0) {
+          setTimeout(() => endRoundRef.current(true), 500);
+          return;
+        }
       } else {
-        dispatch({ type: 'ADD_LOG', text: `> You shoot ${enemyNameRef.current}... *click* Empty.`, logType: 'info' });
+        dispatch({
+          type: "ADD_LOG",
+          text: `> You shoot ${enemyNameRef.current}... *click* Empty.`,
+          logType: "info",
+        });
       }
-      dispatch({ type: 'INCREMENT_TURN' });
-      dispatch({ type: 'SET_PLAYER_TURN', value: false });
-      dispatch({ type: 'SET_ACTION_LOCKED', value: true });
-      setTimeout(() => { dispatch({ type: 'SET_ACTION_LOCKED', value: false }); enemyTurnRef.current(); }, 1500);
+      dispatch({ type: "INCREMENT_TURN" });
+      dispatch({ type: "SET_PLAYER_TURN", value: false });
+      dispatch({ type: "SET_ACTION_LOCKED", value: true });
+      setTimeout(() => {
+        dispatch({ type: "SET_ACTION_LOCKED", value: false });
+        enemyTurnRef.current();
+      }, 1500);
     }
   }
 
   // ── SPIN CHAMBER ─────────────────────────────────────────────────────────
   function spinChamberAction() {
     if (!isPlayerTurn || spinning || actionLocked) return;
-    dispatch({ type: 'SET_SPINNING', value: true });
-    dispatch({ type: 'ADD_LOG', text: '> You spin the chamber...', logType: 'info' });
+    dispatch({ type: "SET_SPINNING", value: true });
+    dispatch({
+      type: "ADD_LOG",
+      text: "> You spin the chamber...",
+      logType: "info",
+    });
     setTimeout(() => {
-      dispatch({ type: 'SET_CHAMBER', index: rand(0, CHAMBER_SIZE - 1) });
-      dispatch({ type: 'SET_SPINNING', value: false });
-      dispatch({ type: 'ADD_LOG', text: '> Chamber spun.', logType: 'system' });
-      dispatch({ type: 'INCREMENT_TURN' });
-      dispatch({ type: 'SET_PLAYER_TURN', value: false });
-      dispatch({ type: 'SET_ACTION_LOCKED', value: true });
-      setTimeout(() => { dispatch({ type: 'SET_ACTION_LOCKED', value: false }); enemyTurnRef.current(); }, 1000);
+      dispatch({ type: "SET_CHAMBER", index: rand(0, CHAMBER_SIZE - 1) });
+      dispatch({ type: "SET_SPINNING", value: false });
+      dispatch({ type: "ADD_LOG", text: "> Chamber spun.", logType: "system" });
+      dispatch({ type: "INCREMENT_TURN" });
+      dispatch({ type: "SET_PLAYER_TURN", value: false });
+      dispatch({ type: "SET_ACTION_LOCKED", value: true });
+      setTimeout(() => {
+        dispatch({ type: "SET_ACTION_LOCKED", value: false });
+        enemyTurnRef.current();
+      }, 1000);
     }, 700);
   }
 
   // ── ENEMY TURN ───────────────────────────────────────────────────────────
   function enemyTurn() {
-    dispatch({ type: 'ADD_LOG', text: `[${enemyNameRef.current.toUpperCase()}] thinking...`, logType: 'system' });
+    dispatch({
+      type: "ADD_LOG",
+      text: `[${enemyNameRef.current.toUpperCase()}] thinking...`,
+      logType: "system",
+    });
 
     setTimeout(() => {
       const choice = rand(0, 10);
       const isLive = bulletsRef.current[currentChamberRef.current];
-      dispatch({ type: 'ADVANCE_CHAMBER' });
+      dispatch({ type: "ADVANCE_CHAMBER" });
 
       if (choice <= 2) {
         if (isLive) {
-          dispatch({ type: 'ADD_LOG', text: `[${enemyNameRef.current.toUpperCase()}] shoots self... BANG! -1 HP`, logType: 'damage' });
+          dispatch({
+            type: "ADD_LOG",
+            text: `[${enemyNameRef.current.toUpperCase()}] shoots self... BANG! -1 HP`,
+            logType: "damage",
+          });
           const newHP = Math.max(0, enemyHPRef.current - 1);
-          dispatch({ type: 'SET_HP', target: 'enemy', value: newHP });
-          if (newHP <= 0) { setTimeout(() => endRoundRef.current(true), 500); return; }
-          dispatch({ type: 'INCREMENT_TURN' });
-          dispatch({ type: 'SET_PLAYER_TURN', value: true });
-          dispatch({ type: 'ADD_LOG', text: '[SYSTEM] Your turn.', logType: 'info' });
+          dispatch({ type: "SET_HP", target: "enemy", value: newHP });
+          if (newHP <= 0) {
+            setTimeout(() => endRoundRef.current(true), 500);
+            return;
+          }
+          dispatch({ type: "INCREMENT_TURN" });
+          dispatch({ type: "SET_PLAYER_TURN", value: true });
+          dispatch({
+            type: "ADD_LOG",
+            text: "[SYSTEM] Your turn.",
+            logType: "info",
+          });
         } else {
-          dispatch({ type: 'ADD_LOG', text: `[${enemyNameRef.current.toUpperCase()}] shoots self... *click* Empty. Goes again.`, logType: 'info' });
+          dispatch({
+            type: "ADD_LOG",
+            text: `[${enemyNameRef.current.toUpperCase()}] shoots self... *click* Empty. Goes again.`,
+            logType: "info",
+          });
           setTimeout(() => enemyTurnRef.current(), 1200);
           return;
         }
       } else if (choice <= 8) {
         if (isLive) {
-          dispatch({ type: 'ADD_LOG', text: `[${enemyNameRef.current.toUpperCase()}] shoots you... BANG! -1 HP`, logType: 'damage' });
+          dispatch({
+            type: "ADD_LOG",
+            text: `[${enemyNameRef.current.toUpperCase()}] shoots you... BANG! -1 HP`,
+            logType: "damage",
+          });
           const newHP = Math.max(0, playerHPRef.current - 1);
-          dispatch({ type: 'SET_HP', target: 'player', value: newHP });
-          if (newHP <= 0) { setTimeout(() => endRoundRef.current(false), 500); return; }
+          dispatch({ type: "SET_HP", target: "player", value: newHP });
+          if (newHP <= 0) {
+            setTimeout(() => endRoundRef.current(false), 500);
+            return;
+          }
         } else {
-          dispatch({ type: 'ADD_LOG', text: `[${enemyNameRef.current.toUpperCase()}] shoots you... *click* Empty.`, logType: 'info' });
+          dispatch({
+            type: "ADD_LOG",
+            text: `[${enemyNameRef.current.toUpperCase()}] shoots you... *click* Empty.`,
+            logType: "info",
+          });
         }
-        dispatch({ type: 'INCREMENT_TURN' });
-        dispatch({ type: 'SET_PLAYER_TURN', value: true });
-        dispatch({ type: 'ADD_LOG', text: '[SYSTEM] Your turn.', logType: 'info' });
+        dispatch({ type: "INCREMENT_TURN" });
+        dispatch({ type: "SET_PLAYER_TURN", value: true });
+        dispatch({
+          type: "ADD_LOG",
+          text: "[SYSTEM] Your turn.",
+          logType: "info",
+        });
       } else {
-        dispatch({ type: 'ADD_LOG', text: `[${enemyNameRef.current.toUpperCase()}] spins the chamber.`, logType: 'info' });
-        dispatch({ type: 'SET_SPINNING', value: true });
+        dispatch({
+          type: "ADD_LOG",
+          text: `[${enemyNameRef.current.toUpperCase()}] spins the chamber.`,
+          logType: "info",
+        });
+        dispatch({ type: "SET_SPINNING", value: true });
         setTimeout(() => {
-          dispatch({ type: 'SET_CHAMBER', index: rand(0, CHAMBER_SIZE - 1) });
-          dispatch({ type: 'SET_SPINNING', value: false });
-          dispatch({ type: 'INCREMENT_TURN' });
-          dispatch({ type: 'SET_PLAYER_TURN', value: true });
-          dispatch({ type: 'ADD_LOG', text: '[SYSTEM] Your turn.', logType: 'info' });
+          dispatch({ type: "SET_CHAMBER", index: rand(0, CHAMBER_SIZE - 1) });
+          dispatch({ type: "SET_SPINNING", value: false });
+          dispatch({ type: "INCREMENT_TURN" });
+          dispatch({ type: "SET_PLAYER_TURN", value: true });
+          dispatch({
+            type: "ADD_LOG",
+            text: "[SYSTEM] Your turn.",
+            logType: "info",
+          });
         }, 700);
       }
     }, 1200);
@@ -260,34 +401,50 @@ export default function App() {
   function endRound(playerWon) {
     if (playerWon) {
       const newWins = playerWinsRef.current + 1;
-      dispatch({ type: 'ADD_WIN' });
-      dispatch({ type: 'ADD_LOG', text: `[SYSTEM] === ROUND ${roundRef.current} WON ===`, logType: 'heal' });
+      dispatch({ type: "ADD_WIN" });
+      dispatch({
+        type: "ADD_LOG",
+        text: `[SYSTEM] === ROUND ${roundRef.current} WON ===`,
+        logType: "heal",
+      });
       if (newWins >= ROUNDS_TO_WIN) {
         recordGameEnd(true);
-        dispatch({ type: 'GAME_OVER', won: true });
-        setScreen('gameover');
+        dispatch({ type: "GAME_OVER", won: true });
+        setScreen("gameover");
         return;
       }
     } else {
       const newLosses = enemyWinsRef.current + 1;
-      dispatch({ type: 'ADD_LOSS' });
-      dispatch({ type: 'ADD_LOG', text: `[SYSTEM] === ROUND ${roundRef.current} LOST ===`, logType: 'damage' });
+      dispatch({ type: "ADD_LOSS" });
+      dispatch({
+        type: "ADD_LOG",
+        text: `[SYSTEM] === ROUND ${roundRef.current} LOST ===`,
+        logType: "damage",
+      });
       if (newLosses >= ROUNDS_TO_WIN) {
         recordGameEnd(false);
-        dispatch({ type: 'GAME_OVER', won: false });
-        setScreen('gameover');
+        dispatch({ type: "GAME_OVER", won: false });
+        setScreen("gameover");
         return;
       }
     }
 
     const nextRound = roundRef.current + 1;
     const newBullets = generateBullets();
-    dispatch({ type: 'NEXT_ROUND', bullets: newBullets });
+    dispatch({ type: "NEXT_ROUND", bullets: newBullets });
 
     setTimeout(() => {
       const liveCount = newBullets.filter(Boolean).length;
-      dispatch({ type: 'ADD_LOG', text: `[SYSTEM] Round ${nextRound} begins. ${liveCount} live round${liveCount > 1 ? 's' : ''} loaded.`, logType: 'system' });
-      dispatch({ type: 'ADD_LOG', text: '[SYSTEM] Your turn.', logType: 'info' });
+      dispatch({
+        type: "ADD_LOG",
+        text: `[SYSTEM] Round ${nextRound} begins. ${liveCount} live round${liveCount > 1 ? "s" : ""} loaded.`,
+        logType: "system",
+      });
+      dispatch({
+        type: "ADD_LOG",
+        text: "[SYSTEM] Your turn.",
+        logType: "info",
+      });
     }, 300);
   }
   endRoundRef.current = endRound;
@@ -307,7 +464,8 @@ export default function App() {
 
     const winIndex = rand(0, CASINO_OUTCOMES.length - 1);
     const anglePerSlice = 360 / CASINO_OUTCOMES.length;
-    const targetAngle = 360 * 5 + (360 - winIndex * anglePerSlice - anglePerSlice / 2);
+    const targetAngle =
+      360 * 5 + (360 - winIndex * anglePerSlice - anglePerSlice / 2);
     setWheelRotation(targetAngle);
 
     setTimeout(() => {
@@ -321,57 +479,101 @@ export default function App() {
   }
 
   function applyCasinoOutcome(outcome) {
-    dispatch({ type: 'USE_CASINO' });
+    dispatch({ type: "USE_CASINO" });
     switch (outcome.action) {
-      case 'instakill':
-        dispatch({ type: 'ADD_LOG', text: `[CASINO] INSTA KILL! ${enemyNameRef.current} eliminated!`, logType: 'heal' });
-        dispatch({ type: 'SET_HP', target: 'enemy', value: 0 });
+      case "instakill":
+        dispatch({
+          type: "ADD_LOG",
+          text: `[CASINO] INSTA KILL! ${enemyNameRef.current} eliminated!`,
+          logType: "heal",
+        });
+        dispatch({ type: "SET_HP", target: "enemy", value: 0 });
         setTimeout(() => endRoundRef.current(true), 1000);
         break;
-      case 'heal3':
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] +3 HP restored!', logType: 'heal' });
-        dispatch({ type: 'SET_HP', target: 'player', value: Math.min(MAX_HP, playerHPRef.current + 3) });
+      case "heal3":
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] +3 HP restored!",
+          logType: "heal",
+        });
+        dispatch({
+          type: "SET_HP",
+          target: "player",
+          value: Math.min(MAX_HP, playerHPRef.current + 3),
+        });
         break;
-      case 'heal1':
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] +1 HP restored!', logType: 'heal' });
-        dispatch({ type: 'SET_HP', target: 'player', value: Math.min(MAX_HP, playerHPRef.current + 1) });
+      case "heal1":
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] +1 HP restored!",
+          logType: "heal",
+        });
+        dispatch({
+          type: "SET_HP",
+          target: "player",
+          value: Math.min(MAX_HP, playerHPRef.current + 1),
+        });
         break;
-      case 'skipSelf':
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] Skip your turn! Enemy goes next.', logType: 'info' });
-        dispatch({ type: 'SET_PLAYER_TURN', value: false });
-        dispatch({ type: 'SET_ACTION_LOCKED', value: true });
+      case "skipSelf":
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] Skip your turn! Enemy goes next.",
+          logType: "info",
+        });
+        dispatch({ type: "SET_PLAYER_TURN", value: false });
+        dispatch({ type: "SET_ACTION_LOCKED", value: true });
         setTimeout(() => {
-          dispatch({ type: 'SET_ACTION_LOCKED', value: false });
-          dispatch({ type: 'INCREMENT_TURN' });
+          dispatch({ type: "SET_ACTION_LOCKED", value: false });
+          dispatch({ type: "INCREMENT_TURN" });
           enemyTurnRef.current();
         }, 800);
         break;
-      case 'skipEnemy':
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] Skip enemy turn! You go again!', logType: 'heal' });
+      case "skipEnemy":
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] Skip enemy turn! You go again!",
+          logType: "heal",
+        });
         break;
-      case 'lose3': {
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] -3 HP! Ouch!', logType: 'damage' });
+      case "lose3": {
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] -3 HP! Ouch!",
+          logType: "damage",
+        });
         const nh = Math.max(0, playerHPRef.current - 3);
-        dispatch({ type: 'SET_HP', target: 'player', value: nh });
+        dispatch({ type: "SET_HP", target: "player", value: nh });
         if (nh <= 0) setTimeout(() => endRoundRef.current(false), 500);
         break;
       }
-      case 'lose2': {
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] -2 HP!', logType: 'damage' });
+      case "lose2": {
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] -2 HP!",
+          logType: "damage",
+        });
         const nh = Math.max(0, playerHPRef.current - 2);
-        dispatch({ type: 'SET_HP', target: 'player', value: nh });
+        dispatch({ type: "SET_HP", target: "player", value: nh });
         if (nh <= 0) setTimeout(() => endRoundRef.current(false), 500);
         break;
       }
-      case 'lose1': {
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] -1 HP!', logType: 'damage' });
+      case "lose1": {
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] -1 HP!",
+          logType: "damage",
+        });
         const nh = Math.max(0, playerHPRef.current - 1);
-        dispatch({ type: 'SET_HP', target: 'player', value: nh });
+        dispatch({ type: "SET_HP", target: "player", value: nh });
         if (nh <= 0) setTimeout(() => endRoundRef.current(false), 500);
         break;
       }
-      case 'nothing':
-        dispatch({ type: 'ADD_LOG', text: '[CASINO] Nothing happens. Pick up the revolver.', logType: 'system' });
+      case "nothing":
+        dispatch({
+          type: "ADD_LOG",
+          text: "[CASINO] Nothing happens. Pick up the revolver.",
+          logType: "system",
+        });
         break;
     }
   }
@@ -381,14 +583,14 @@ export default function App() {
   }
 
   function goToLogin() {
-    setScreen('login');
-    setPlayerName('');
+    setScreen("login");
+    setPlayerName("");
   }
 
   const canAct = isPlayerTurn && !spinning && !actionLocked;
 
   // ── Render ───────────────────────────────────────────────────────────────
-  if (screen === 'login') {
+  if (screen === "login") {
     return (
       <LoginScreen
         playerName={playerName}
@@ -400,7 +602,7 @@ export default function App() {
     );
   }
 
-  if (screen === 'gameover') {
+  if (screen === "gameover") {
     return (
       <GameOverScreen
         gameWon={gameWon}
