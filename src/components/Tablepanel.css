@@ -1,0 +1,85 @@
+.table-panel {
+  border-left: 1px solid #221111;
+  display: flex;
+  flex-direction: column;
+  background: rgba(8, 3, 3, 0.9);
+}
+
+.table-panel-title {
+  padding: 9px 18px;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #ff4444;
+  border-bottom: 1px solid #1a0808;
+}
+
+.table-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px;
+}
+
+.table-label {
+  font-size: 10px;
+  color: #442222;
+  letter-spacing: 2px;
+}
+
+.casino-section {
+  text-align: center;
+}
+
+.casino-label {
+  font-size: 10px;
+  color: #442222;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+
+.casino-btn {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.casino-btn.active {
+  background: radial-gradient(circle, #ff2222 0%, #990000 60%, #550000 100%);
+  border: 3px solid #ff4444;
+  color: #fff;
+  box-shadow: 0 0 25px rgba(255, 34, 34, 0.35), inset 0 -2px 6px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  animation: glow 2s ease-in-out infinite;
+}
+
+.casino-btn.active:hover {
+  transform: scale(1.05);
+}
+
+.casino-btn.disabled {
+  background: radial-gradient(circle, #221111 0%, #0d0505 100%);
+  border: 3px solid #221111;
+  color: #331111;
+  cursor: not-allowed;
+  box-shadow: none;
+  animation: none;
+}
+
+.casino-used-text {
+  font-size: 9px;
+  color: #442222;
+  letter-spacing: 2px;
+  margin-top: 6px;
+}

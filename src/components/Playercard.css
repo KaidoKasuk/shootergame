@@ -1,0 +1,69 @@
+.player-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.player-avatar {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid #221111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.player-name {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #ff4444;
+  margin-bottom: 6px;
+}
+
+.player-hp-label {
+  font-size: 10px;
+  color: #882222;
+  margin-bottom: 4px;
+}
+
+.hp-bar-outer {
+  width: 140px;
+  height: 7px;
+  background: #0d0303;
+  border: 1px solid #221111;
+  overflow: hidden;
+}
+
+.hp-bar-inner {
+  height: 100%;
+  transition: width 0.5s;
+}
+
+.hp-bar-inner.high {
+  background: #ff2222;
+  box-shadow: 0 0 6px rgba(255, 34, 34, 0.4);
+}
+
+.hp-bar-inner.mid {
+  background: #cc6600;
+  box-shadow: 0 0 6px rgba(204, 102, 0, 0.5);
+}
+
+.hp-bar-inner.low {
+  background: #ff0000;
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.6);
+}
+
+.player-wins {
+  font-size: 9px;
+  color: #442222;
+  margin-top: 8px;
+  letter-spacing: 2px;
+}

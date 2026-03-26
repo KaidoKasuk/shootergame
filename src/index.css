@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Creepster&display=swap');
+
+/* ─── Reset & Base ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: #0a0a0a;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  color: #ff2222;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0505;
+}
+::-webkit-scrollbar-thumb {
+  background: #331111;
+}
+
+/* ─── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes casinoGlow {
+  0% { text-shadow: 0 0 20px rgba(255, 170, 0, 0.3); }
+  100% { text-shadow: 0 0 40px rgba(255, 170, 0, 0.8), 0 0 80px rgba(255, 170, 0, 0.3); }
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes chamberSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(1080deg); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 34, 34, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(255, 34, 34, 0.6); }
+}

@@ -1,0 +1,111 @@
+.action-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.console-tabs {
+  display: flex;
+  border-bottom: 1px solid #1a0808;
+}
+
+.console-tab {
+  padding: 9px 18px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  color: #442222;
+  transition: all 0.15s;
+}
+
+.console-tab.active {
+  color: #ff4444;
+  background: rgba(255, 34, 34, 0.04);
+  border-bottom-color: #ff2222;
+}
+
+.turn-indicator {
+  padding: 7px 14px;
+  margin: 10px 14px 0;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.turn-indicator.player {
+  border: 1px solid #ff2222;
+  background: rgba(255, 34, 34, 0.06);
+  color: #ff4444;
+}
+
+.turn-indicator.enemy {
+  border: 1px solid #664400;
+  background: rgba(102, 68, 0, 0.06);
+  color: #cc8800;
+}
+
+.console-log {
+  flex: 1;
+  margin: 8px 14px;
+  padding: 10px;
+  background: #040202;
+  border: 1px solid #1a0808;
+  font-size: 11px;
+  color: #33cc33;
+  overflow: auto;
+  max-height: 120px;
+  line-height: 1.6;
+}
+
+.console-prompt {
+  color: #444;
+  margin-bottom: 2px;
+}
+
+.console-cursor {
+  animation: pulse 1s infinite;
+}
+
+.log-line {
+  margin-bottom: 1px;
+}
+
+.log-line.damage { color: #ff4444; }
+.log-line.heal { color: #44ff44; }
+.log-line.info { color: #ffaa00; }
+.log-line.system { color: #666; }
+.log-line.default { color: #33cc33; }
+
+.action-btns {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 9px 18px;
+  background: transparent;
+  font-size: 11px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  border: 1px solid #ff2222;
+  color: #ff2222;
+  cursor: pointer;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: rgba(255, 34, 34, 0.08);
+}
+
+.action-btn:disabled {
+  border-color: #221111;
+  color: #331111;
+  opacity: 0.4;
+  cursor: not-allowed;
+}

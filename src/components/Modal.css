@@ -1,0 +1,93 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+}
+
+.modal-box {
+  background: #0d0505;
+  border: 1px solid #221111;
+  padding: 32px;
+  max-width: 480px;
+  width: 90vw;
+  max-height: 80vh;
+  overflow: auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #ff2222;
+  font-size: 20px;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+.modal-close:hover {
+  color: #ff4444;
+}
+
+.modal-title {
+  font-size: 16px;
+  letter-spacing: 4px;
+  color: #ff4444;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1a0808;
+}
+
+.modal-text {
+  font-size: 12px;
+  color: #996666;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.modal-stat {
+  font-size: 12px;
+  color: #996666;
+  line-height: 2.2;
+}
+
+/* Leaderboard table */
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.lb-th {
+  color: #772222;
+  letter-spacing: 2px;
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid #1a0808;
+  font-weight: normal;
+}
+
+.lb-th-name { width: 50%; }
+
+.lb-row { border-bottom: 1px solid #110505; }
+
+.lb-row:last-child { border-bottom: none; }
+
+.lb-td {
+  padding: 8px 10px;
+  color: #886666;
+}
+
+.lb-rank { color: #442222; }
+.lb-wins { color: #44aa44; }
+.lb-losses { color: #aa4444; }
+.lb-rate { color: #ffaa00; }
+
+.lb-you .lb-td { color: #ff4444; }
+.lb-you .lb-name { font-weight: bold; }
